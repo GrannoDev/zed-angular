@@ -24,8 +24,10 @@ function managedServer(projectDir, extensionDir) {
       join(nodeDir, '../lib/node_modules/npm/bin/npm-cli.js'),
       join(nodeDir, 'node_modules/npm/bin/npm-cli.js'),
     ].find(path => fs.existsSync(path));
-    const args = ['install', '--prefix', staging, '--no-save', '--no-package-lock', '--ignore-scripts',
-      '--no-audit', '--no-fund', '--prefer-offline', '@angular/language-server@' + major];
+    // Keep the npm cache in the extension directory. Zed allows writes only there.
+    const args = ['install', '--prefix', staging, '--cache', join(extensionDir, 'npm-cache'),
+      '--no-save', '--no-package-lock', '--ignore-scripts',
+      '--no-audit', '--no-fund', '--no-update-notifier', '--prefer-offline', '@angular/language-server@' + major];
     const { execFileSync } = require('node:child_process');
     execFileSync(npm ? process.execPath : 'npm', npm ? [npm, ...args] : args, {
       cwd: staging, stdio: ['ignore', 'ignore', 'inherit'], windowsHide: true,

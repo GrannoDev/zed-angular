@@ -1,5 +1,5 @@
 {
   "languages": {
-    "TypeScript": { "language_servers": ["angular-workspace", "..."] }
+    "TypeScript": { "language_servers": ["angular-template-lsp", "..."] }
   }
 }

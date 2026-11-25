@@ -9,13 +9,23 @@ Use Angular API documentation on hover, completions, template diagnostics, and *
 - **Directive definitions.** On macOS, Cmd-click the directive name in an inline or external template. For a project directive, Zed opens its source. For a dependency, Angular can return the input and class declarations in a `.d.ts` file. Clicking the expression on the right takes you to the component member. [Zed navigation](https://zed.dev/docs/finding-navigating#go-to-definition)
 - **Inline styles.** Angular language server 21.2 or later provides CSS property completions and hover help in a `styles` string or array. [Angular release notes](https://github.com/angular/angular/blob/main/vscode-ng-language-service/CHANGELOG.md#2120-2026-02-18)
 
+## Compared with the Angular extension
+
+The [Angular extension](https://github.com/nathansbradshaw/zed-angular) starts the Angular language server with its own grammar. This extension uses Zed's HTML and TypeScript languages and adds these features:
+
+- Angular API documentation and reference links on hover, for TypeScript code and templates.
+- Reference links for template syntax, such as `@if`, `@for`, `@let`, and `<ng-container>`.
+- A language server that matches the project's Angular major version. Projects with different majors can be open at the same time.
+- The Angular app can be in a subdirectory of the worktree.
+- Go to Definition for external templates in projects that use TypeScript project references.
+
 ## Setup
 
 1. Install Rust with `rustup`. In Zed, open **Extensions**, select **Install Dev Extension**, and select this directory. Install the Zed HTML extension for external templates.
 2. Install the Angular app’s dependencies. The extension uses the project's `@angular/language-server` if available. Otherwise, it uses npm to install a server for the installed Angular major version in Zed’s extension directory. npm downloads any packages missing from its cache. Later starts use the installed server. In a remote workspace, the install and cache are on the remote host.
 3. Open the Angular project or its parent directory in Zed. If the repository contains separate Angular apps with different server versions, open the app you want as a worktree.
 
-Zed enables the extension by default for **HTML**, **Angular**, and **TypeScript**. If a language has a custom `language_servers` list without `"..."`, add `"angular-workspace"` to that list. [Zed language extensions](https://zed.dev/docs/extensions/languages)
+Zed enables the extension by default for **HTML**, **Angular**, and **TypeScript**. If a language has a custom `language_servers` list without `"..."`, add `"angular-template-lsp"` to that list. [Zed language extensions](https://zed.dev/docs/extensions/languages)
 
 ## Check a component
 

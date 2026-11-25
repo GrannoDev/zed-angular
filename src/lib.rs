@@ -1,8 +1,8 @@
 use zed_extension_api as zed;
 
-struct AngularWorkspace;
+struct AngularTemplateLsp;
 
-impl zed::Extension for AngularWorkspace {
+impl zed::Extension for AngularTemplateLsp {
     fn new() -> Self {
         Self
     }
@@ -42,4 +42,4 @@ impl zed::Extension for AngularWorkspace {
     }
 }
 
-zed::register_extension!(AngularWorkspace);
+zed::register_extension!(AngularTemplateLsp);

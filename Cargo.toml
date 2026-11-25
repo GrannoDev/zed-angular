@@ -1,5 +1,5 @@
 [package]
-name = "angular_workspace"
+name = "angular_template_lsp"
 version = "0.0.1"
 authors = ["Magnus Granno"]
 edition = "2024"

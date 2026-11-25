@@ -1,4 +1,4 @@
-id = "angular-workspace"
+id = "angular-template-lsp"
 name = "Angular Template Tools"
 version = "0.0.1"
 schema_version = 1
@@ -6,7 +6,7 @@ authors = ["Magnus Granno"]
 repository = "https://github.com/GrannoDev/zed-angular"
 description = "Angular API documentation on hover, completions, diagnostics, and Go to Definition in external HTML and inline TypeScript templates."
 
-[language_servers.angular-workspace]
+[language_servers.angular-template-lsp]
 name = "Angular Language Server"
 languages = ["HTML", "Angular", "TypeScript"]
 language_ids = { HTML = "html", Angular = "html", TypeScript = "typescript" }

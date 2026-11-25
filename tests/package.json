@@ -1,5 +1,5 @@
 {
-  "name": "angular-workspace-tests",
+  "name": "angular-template-lsp-tests",
   "private": true,
   "scripts": { "test": "node --test" },
   "devDependencies": {
