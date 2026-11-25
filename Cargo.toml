@@ -1,0 +1,14 @@
+[package]
+name = "angular_workspace"
+version = "0.0.1"
+authors = ["Magnus Granno"]
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/GrannoDev/zed-angular"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+zed_extension_api = "0.7.0"

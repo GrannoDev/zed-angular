@@ -1,0 +1,7 @@
+<p appPick [ngClass]="'card'">Card</p>
+<ng-template [ngTemplateOutlet]="null"></ng-template>
+@let entries = [1];
+@if (entries.length) { <ng-content /> } @else if (false) {} @else {}
+@for (entry of entries; track entry) { {{ entry }} } @empty {}
+@switch (entries.length) { @case (1) {} @default {} }
+@defer { <ng-container /> } @placeholder {} @loading {} @error {}
