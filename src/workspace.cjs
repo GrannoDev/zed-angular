@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const { dirname, join } = require('node:path');
+const { dirname, join, relative } = require('node:path');
 
 function isAngularProject(dir) {
   if (fs.existsSync(join(dir, 'angular.json'))) return true;

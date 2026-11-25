@@ -1,7 +1,7 @@
 // A solution tsconfig can contain only project references. On a cold HTML open,
 // TypeScript has no source file from which to load the owning Angular project.
-function installExternalTemplateLookup(serverDirectory) {
-  const ts = require(require.resolve('typescript/lib/tsserverlibrary', { paths: [serverDirectory] }));
+function installExternalTemplateLookup(typescriptDir) {
+  const ts = require(require.resolve('typescript/lib/tsserverlibrary', { paths: [typescriptDir] }));
   const service = ts.server.ProjectService.prototype;
   const open = service.openClientFile;
 

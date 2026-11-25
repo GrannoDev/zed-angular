@@ -1,14 +1,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { mkdtempSync, mkdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } = require('node:fs');
-const { dirname, join } = require('node:path');
+const { dirname, join, relative } = require('node:path');
 const { tmpdir } = require('node:os');
 const { spawnSync } = require('node:child_process');
 
 const launcher = require('./launcher.cjs');
 
-function launch(workspace, input) {
-  return spawnSync(process.execPath, ['--input-type=commonjs', '-e', launcher, '--', workspace], {
+function launch(workspace, input, extensionDir = workspace) {
+  return spawnSync(process.execPath, ['--input-type=commonjs', '-e', launcher, '--', workspace, extensionDir], {
     encoding: 'utf8', input,
     timeout: 5000,
     env: { ...process.env, NODE_PATH: '' },
@@ -32,6 +32,32 @@ test('loads a hoisted server when the worktree path contains spaces and commas',
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(JSON.parse(result.stdout), [
     realpathSync(server), '--stdio', '--tsProbeLocations', '.', '--ngProbeLocations', '.',
+    '--includeCompletionsWithSnippetText',
+  ]);
+});
+
+test('a managed server without typescript uses the app typescript', (t) => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'managed-server-')));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  // Angular 20 and earlier language servers do not depend on typescript.
+  const app = join(root, 'app');
+  const core = join(app, 'node_modules', '@angular', 'core');
+  mkdirSync(core, { recursive: true });
+  writeFileSync(join(app, 'angular.json'), '{}');
+  writeFileSync(join(core, 'package.json'), '{"version":"17.3.0"}');
+  symlinkSync(dirname(require.resolve('typescript/package.json')), join(app, 'node_modules', 'typescript'), 'junction');
+  const extensionDir = join(root, 'extension');
+  const packages = join(extensionDir, 'servers', '17', 'node_modules', '@angular');
+  const server = join(packages, 'language-server');
+  mkdirSync(server, { recursive: true });
+  mkdirSync(join(packages, 'language-service'));
+  writeFileSync(join(packages, 'language-service', 'index.js'), 'module.exports = () => ({})');
+  writeFileSync(join(server, 'index.js'), 'console.log(JSON.stringify([process.cwd(), ...process.argv.slice(2)]))');
+
+  const result = launch(app, '', extensionDir);
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(JSON.parse(result.stdout), [
+    server, '--stdio', '--tsProbeLocations', relative(server, app), '--ngProbeLocations', '.',
     '--includeCompletionsWithSnippetText',
   ]);
 });

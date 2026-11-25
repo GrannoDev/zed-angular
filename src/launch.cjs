@@ -3,12 +3,26 @@ async function start(workspace, extensionDir) {
   if (!app) return serveNonAngularWorkspace();
   const server = app.server ?? managedServer(app.dir, extensionDir);
 
+  // Angular 21 and later servers depend on TypeScript. Earlier servers use the app's TypeScript.
+  const typescriptDir = [dirname(server), app.dir].find(dir => {
+    try {
+      return require.resolve('typescript/lib/tsserverlibrary', { paths: [dir] });
+    } catch (error) {
+      if (error.code !== 'MODULE_NOT_FOUND') throw error;
+    }
+  });
+  if (!typescriptDir) throw new Error(`Cannot find typescript for ${server}. Install the app's dependencies.`);
+
   // Probe from the real package directory so Node can find nested or linked dependencies.
-  // A relative probe also keeps commas in workspace paths out of Angular's probe list.
+  // Relative probes also keep commas in workspace paths out of Angular's probe lists.
+  const typescriptProbe = relative(dirname(server), typescriptDir) || '.';
+  if (typescriptProbe.includes(',')) {
+    throw new Error(`Angular cannot probe a path that contains a comma: ${typescriptDir}. Install @angular/language-server in the app.`);
+  }
   process.chdir(dirname(server));
   process.argv = [
     process.execPath, server, '--stdio',
-    '--tsProbeLocations', '.', '--ngProbeLocations', '.',
+    '--tsProbeLocations', typescriptProbe, '--ngProbeLocations', '.',
     '--includeCompletionsWithSnippetText',
   ];
   let parser;
@@ -20,7 +34,7 @@ async function start(workspace, extensionDir) {
   } catch (error) {
     if (error.code !== 'MODULE_NOT_FOUND') throw error;
   }
-  installExternalTemplateLookup(dirname(server));
+  installExternalTemplateLookup(typescriptDir);
   installApiHover(dirname(server), parser);
   require(server);
 }
